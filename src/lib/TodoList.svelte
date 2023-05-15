@@ -1,13 +1,20 @@
 <script>
 	import Button from './Button.svelte'
-	import { createEventDispatcher, onMount } from 'svelte'
+	import { afterUpdate, createEventDispatcher, onMount } from 'svelte'
 
-	onMount(() => {
-		console.log('mounted')
+	afterUpdate(() => {
+		if (autoscroll) listDiv.scrollTo(0, listDiv.scrollHeight)
+		autoscroll = false
 	})
 
 	export let todos = []
-	export const readonly = 'readonly'
+	let prevTodos = todos
+
+	$: {
+		autoscroll = todos.length > prevTodos.length
+		prevTodos = todos
+	}
+
 	export function clearInput() {
 		inputText = ''
 	}
@@ -15,7 +22,7 @@
 		input.focus()
 	}
 	let inputText
-	let input
+	let input, listDiv, autoscroll
 
 	const dispatch = createEventDispatcher()
 	function handleAddTodo() {
@@ -48,7 +55,7 @@
 </script>
 
 <div class="todo-list-wrapper">
-	<div class="todo-list">
+	<div class="todo-list" bind:this={listDiv}>
 		<ul>
 			{#each todos as { id, title, completed } (id)}
 				<li>
