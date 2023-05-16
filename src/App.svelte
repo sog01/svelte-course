@@ -3,8 +3,10 @@
 <script>
 	import TodoList from './lib/TodoList.svelte'
 	import { v4 as uuid } from 'uuid'
+	import { tick } from 'svelte'
 
 	let todoList
+	let showTodoList = true
 
 	let todos = [
 		{
@@ -19,12 +21,12 @@
 		},
 		{
 			id: uuid(),
-			title: 'Todo 3',
+			title: 'Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry',
 			completed: true
 		}
 	]
 
-	function handleAddTodo(event) {
+	async function handleAddTodo(event) {
 		event.preventDefault()
 		todos = [
 			...todos,
@@ -34,6 +36,8 @@
 				completed: false
 			}
 		]
+
+		await tick()
 		todoList.clearInput()
 	}
 
@@ -51,13 +55,17 @@
 	}
 </script>
 
-{todoList && todoList.readonly}
-<div style:max-width="200px">
-	<TodoList
-		{todos}
-		bind:this={todoList}
-		on:addtodo={handleAddTodo}
-		on:removetodo={handleRemoveTodo}
-		on:toggletodo={handleToggleTodo}
-	/>
-</div>
+<input type="checkbox" bind:checked={showTodoList} />
+<label for="">Show / Hide list</label>
+
+{#if showTodoList}
+	<div style:max-width="500px">
+		<TodoList
+			{todos}
+			bind:this={todoList}
+			on:addtodo={handleAddTodo}
+			on:removetodo={handleRemoveTodo}
+			on:toggletodo={handleToggleTodo}
+		/>
+	</div>
+{/if}
