@@ -1,7 +1,7 @@
 <svelte:options immutable={true} />
 
 <script>
-	import TodoList from './lib/TodoList.svelte'
+	import TodoList from './lib/TodoListPlaceholder.svelte'
 	import { v4 as uuid } from 'uuid'
 	import { tick, onMount } from 'svelte'
 
@@ -113,6 +113,24 @@
 			on:addtodo={handleAddTodo}
 			on:removetodo={handleRemoveTodo}
 			on:toggletodo={handleToggleTodo}
-		/>
+			let:todo
+			let:index
+			let:handleToggleTodo
+		>
+			<svelte:fragment slot="title">{index + 1} - {todo.title}</svelte:fragment>
+			{@const { id, completed, title } = todo}
+			<!-- <div>
+				<input
+					disabled={disabledItems.includes(id)}
+					on:input={(event) => {
+						event.currentTarget.checked = completed
+						handleToggleTodo(id, !completed)
+					}}
+					type="checkbox"
+					checked={completed}
+				/>
+				{title}
+			</div> -->
+		</TodoList>
 	</div>
 {/if}
